@@ -88,6 +88,31 @@ body {
   }
 }
 
-.countdown-pop {
-  animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Animasi lompat konstan (1 detik sekali) porsi waktu merata */
+@keyframes pixarJump {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+  15% {
+    transform: translateY(0) scaleY(0.75) scaleX(1.15);
+  } /* Bersiap (squash) */
+  40% {
+    transform: translateY(-30px) scaleY(1.15) scaleX(0.85);
+  } /* Puncak lompat */
+  65% {
+    transform: translateY(0) scaleY(0.85) scaleX(1.1);
+  } /* Mendarat (squash) */
+  80% {
+    transform: translateY(-8px) scaleY(1.05) scaleX(0.98);
+  } /* Pantul kecil */
+  92% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  } /* Berdiri tegak */
+}
+
+.animate-pixar-jump {
+  animation: pixarJump 2.5s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+  display: inline-block;
+  transform-origin: bottom;
 }

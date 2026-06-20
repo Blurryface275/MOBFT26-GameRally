@@ -1,0 +1,187 @@
+"use client";
+
+import { useChromaGame } from "../hooks/useChromaGame";
+import React from "react";
+
+export default function Home() {
+  const {
+    phase,
+    countdown,
+    groupName,
+    setGroupName,
+    targetWord,
+    displayColor,
+    startGame,
+    stopGame,
+    nextRound,
+    addCheckTime,
+  } = useChromaGame();
+
+  return (
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
+      {/* Background Ornaments */}
+      <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
+        <div className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"></div>
+      </div>
+
+      <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center space-y-12">
+        {/* === IDLE PHASE === */}
+        {phase === "IDLE" && (
+          <div className="flex flex-col items-center space-y-8 animate-scale-up w-full max-w-md bg-zinc-900/50 backdrop-blur-md p-10 rounded-3xl border border-zinc-800">
+            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 tracking-tight text-center">
+              CHROMA CORE
+            </h1>
+            <div className="w-full flex justify-center pb-4">
+              <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-green-400 bg-green-400/10 border border-green-400/20 rounded-full">
+                Alignment Protocol
+              </span>
+            </div>
+
+            <div className="w-full space-y-3">
+              <label
+                htmlFor="groupName"
+                className="block text-sm font-medium text-zinc-400 ml-1"
+              >
+                Nama Kelompok
+              </label>
+              <input
+                id="groupName"
+                type="text"
+                placeholder="Masukkan kelompok..."
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                className="w-full px-5 py-4 bg-zinc-950 border border-zinc-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-zinc-600 text-lg"
+              />
+            </div>
+
+            <button
+              onClick={startGame}
+              className="w-full relative group overflow-hidden rounded-xl bg-white text-black font-bold text-lg py-4 hover:bg-zinc-200 transition-colors"
+            >
+              <span className="relative z-10 uppercase tracking-widest">
+                Mulai Permainan
+              </span>
+              <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:-translate-x-full translate-x-[150%] transition-transform duration-700"></div>
+            </button>
+          </div>
+        )}
+
+        {/* === PREP PHASE === */}
+        {phase === "PREP" && (
+          <div className="flex flex-col items-center space-y-12 animate-scale-up">
+            <h2 className="text-2xl font-medium text-zinc-400 tracking-widest uppercase">
+              Bersiaplah
+            </h2>
+
+            <div
+              className="text-[12rem] font-black leading-none text-white countdown-pop"
+              key={`prep-${countdown}`}
+            >
+              {countdown}
+            </div>
+
+            <button
+              onClick={stopGame}
+              className="px-8 py-3 rounded-full border border-red-500/50 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition-colors uppercase tracking-widest text-sm font-bold"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+
+        {/* === PLAY PHASE === */}
+        {phase === "PLAY" && (
+          <div className="flex flex-col items-center justify-center animate-scale-up w-full h-full min-h-[60vh]">
+            {/* Text Color Rendering */}
+            <div className="animate-pulse-neon mb-12">
+              <h1
+                className="text-[12vw] font-black uppercase tracking-tighter"
+                style={{ color: displayColor.hex }}
+              >
+                {targetWord.name}
+              </h1>
+            </div>
+
+            {/* Countdown timer for participants to run */}
+            <div className="mt-8 relative flex items-center justify-center">
+              <svg className="w-32 h-32 transform -rotate-90">
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="60"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="transparent"
+                  className="text-zinc-800"
+                />
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="60"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="transparent"
+                  className="text-white transition-all duration-1000 ease-linear"
+                  strokeDasharray={377}
+                  strokeDashoffset={377 - (377 * countdown) / 3}
+                />
+              </svg>
+              <div
+                className="absolute text-5xl font-bold text-white countdown-pop"
+                key={`play-${countdown}`}
+              >
+                {countdown}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* === CHECK PHASE === */}
+        {phase === "CHECK" && (
+          <div className="flex flex-col items-center justify-center space-y-16 animate-scale-up w-full max-w-3xl">
+            <div className="text-center space-y-4">
+              <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400 uppercase tracking-tight">
+                WAKTUNYA CEK POSISI
+              </h2>
+              <p className="text-zinc-400 text-lg md:text-xl">
+                Keluarkan peserta yang salah posisi atau berpindah setelah waktu
+                habis.
+              </p>
+            </div>
+
+            <div
+              className="text-[10rem] md:text-[14rem] font-bold text-white leading-none tabular-nums countdown-pop"
+              key={`check-${countdown}`}
+            >
+              {countdown}
+            </div>
+
+            {/* Admin Controls */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              <button
+                onClick={addCheckTime}
+                className="py-4 px-6 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 font-bold transition-all focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                +10 Detik
+              </button>
+
+              <button
+                onClick={stopGame}
+                className="py-4 px-6 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold transition-all focus:ring-2 focus:ring-red-500 focus:outline-none"
+              >
+                Hentikan Permainan
+              </button>
+
+              <button
+                onClick={nextRound}
+                className="py-4 px-6 rounded-xl border border-green-500/30 bg-green-500/10 hover:bg-green-500/20 text-green-400 font-bold transition-all focus:ring-2 focus:ring-green-500 focus:outline-none"
+              >
+                Next Round
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   description: "Web Interaktif untuk bermain tebak logika warna vs teks",
   icons: {
     icon: "/logo-mob-ft-2026.webp",
-    apple: "/logo-mob-ft-2026.webp",
   },
 };
 

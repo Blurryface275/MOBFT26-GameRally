@@ -3,6 +3,7 @@
 import { useChromaGame } from "../hooks/useChromaGame";
 import React from "react";
 import Background3D from "../components/Background3D";
+import Image from "next/image";
 
 /**
  * Komponen Utama Chroma Core Alignment (Game Board UI Penpos)
@@ -34,6 +35,18 @@ export default function Home() {
             ========================================= */}
         {phase === "IDLE" && (
           <div className="flex flex-col items-center space-y-8 animate-scale-up w-full max-w-xl bg-black/80 backdrop-blur-md p-10 rounded-3xl border border-white/10">
+            {/* Logo MOB FT 2026 */}
+            <div className="relative w-32 h-32 md:w-36 md:h-36 flex items-center justify-center animate-pulse-neon">
+              <Image
+                src="/logo-mob-ft-2026.webp"
+                alt="Logo MOB FT 2026"
+                width={144}
+                height={144}
+                priority
+                className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+              />
+            </div>
+
             <h1 className="text-4xl md:text-5xl font-black text-white tracking-widest uppercase text-center drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
               <span className="inline-block animate-pixar-jump origin-bottom">
                 C

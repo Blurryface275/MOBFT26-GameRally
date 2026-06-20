@@ -2,6 +2,7 @@
 
 import { useChromaGame } from "../hooks/useChromaGame";
 import React from "react";
+import Background3D from "../components/Background3D";
 
 /**
  * Komponen Utama Chroma Core Alignment (Game Board UI Penpos)
@@ -23,18 +24,16 @@ export default function Home() {
   } = useChromaGame();
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-      {/* Background Ornamen: Menciptakan kesan cahaya warna tembus gelap (Glow ambient blur) */}
-      <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
-        <div className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"></div>
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative z-10 w-full overflow-hidden">
+      {/* Animasi Background 3D */}
+      <Background3D />
 
       <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center space-y-12">
         {/* =========================================
             [ FASE 1: IDLE ] Tampilan Start Setup Awal 
             ========================================= */}
         {phase === "IDLE" && (
-          <div className="flex flex-col items-center space-y-8 animate-scale-up w-full max-w-xl bg-zinc-900/50 backdrop-blur-md p-10 rounded-3xl border border-zinc-800">
+          <div className="flex flex-col items-center space-y-8 animate-scale-up w-full max-w-xl bg-black/80 backdrop-blur-md p-10 rounded-3xl border border-white/10">
             <h1 className="text-4xl md:text-5xl font-black text-white tracking-widest uppercase text-center drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
               <span className="inline-block animate-pixar-jump origin-bottom">
                 C

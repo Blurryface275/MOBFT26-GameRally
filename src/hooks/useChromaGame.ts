@@ -61,21 +61,25 @@ export function useChromaGame() {
   useEffect(() => {
     if (phase === "IDLE") return;
 
+    let timeoutDelay = 1000;
     if (countdown <= 0) {
-      if (phase === "PREP") {
-        nextRound();
-      } else if (phase === "PLAY") {
-        setPhase("CHECK");
-        setCountdown(15);
-      } else if (phase === "CHECK") {
-        nextRound();
-      }
-      return;
+      timeoutDelay = 0; // Segera transisi phase tanpa delay
     }
 
     timerRef.current = setTimeout(() => {
-      setCountdown((c) => c - 1);
-    }, 1000);
+      if (countdown <= 0) {
+        if (phase === "PREP") {
+          nextRound();
+        } else if (phase === "PLAY") {
+          setPhase("CHECK");
+          setCountdown(15);
+        } else if (phase === "CHECK") {
+          nextRound();
+        }
+      } else {
+        setCountdown((c) => c - 1);
+      }
+    }, timeoutDelay);
 
     return () => clearTimeout(timerRef.current as NodeJS.Timeout);
   }, [phase, countdown, nextRound]);

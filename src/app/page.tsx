@@ -4,6 +4,7 @@ import { useChromaGame } from "../hooks/useChromaGame";
 import React from "react";
 import Background3D from "../components/Background3D";
 import Image from "next/image";
+import logoImg from "../../public/logo-mob-ft-2026.webp";
 
 /**
  * Komponen Utama Chroma Core Alignment (Game Board UI Penpos)
@@ -38,7 +39,7 @@ export default function Home() {
             {/* Logo MOB FT 2026 */}
             <div className="relative w-32 h-32 md:w-36 md:h-36 flex items-center justify-center animate-pulse-neon">
               <Image
-                src="/logo-mob-ft-2026.webp"
+                src={logoImg}
                 alt="Logo MOB FT 2026"
                 width={144}
                 height={144}

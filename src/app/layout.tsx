@@ -12,11 +12,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const isProd = process.env.NODE_ENV === "production";
+const basePath = isProd ? "/MOBFT26-GameRally" : "";
+
 export const metadata: Metadata = {
   title: "Chroma Core Alignment",
   description: "Web Interaktif untuk bermain tebak logika warna vs teks",
   icons: {
-    icon: "/logo-mob-ft-2026.webp",
+    icon: `${basePath}/logo-mob-ft-2026.webp`,
+    apple: `${basePath}/logo-mob-ft-2026.webp`,
   },
 };
 

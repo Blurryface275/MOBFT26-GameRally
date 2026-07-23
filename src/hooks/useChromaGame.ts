@@ -26,7 +26,6 @@ export function useChromaGame() {
   // State dasar game
   const [phase, setPhase] = useState<GamePhase>("IDLE");
   const [countdown, setCountdown] = useState<number>(0);
-  const [groupName, setGroupName] = useState<string>("");
 
   // State untuk tantangan (warna vs tulisan)
   const [targetWord, setTargetWord] = useState<GameColor>(COLORS[0]);
@@ -127,8 +126,6 @@ export function useChromaGame() {
   return {
     phase,
     countdown,
-    groupName,
-    setGroupName,
     targetWord,
     displayColor,
     startGame,

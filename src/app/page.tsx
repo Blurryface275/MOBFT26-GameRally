@@ -15,8 +15,6 @@ export default function Home() {
   const {
     phase,
     countdown,
-    groupName,
-    setGroupName,
     targetWord,
     displayColor,
     startGame,
@@ -55,24 +53,6 @@ export default function Home() {
               HROMA CORE <br />
               ALIGNMENT
             </h1>
-
-            {/* Input Nama Kelompok Pengunjung */}
-            <div className="w-full space-y-3">
-              <label
-                htmlFor="groupName"
-                className="block text-sm font-medium text-zinc-400 ml-1"
-              >
-                Nama Kelompok
-              </label>
-              <input
-                id="groupName"
-                type="text"
-                placeholder="Masukkan kelompok..."
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                className="w-full px-5 py-4 bg-zinc-950 border border-zinc-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-zinc-600 text-lg"
-              />
-            </div>
 
             <button
               onClick={startGame}

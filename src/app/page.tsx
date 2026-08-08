@@ -27,9 +27,10 @@ export default function Home() {
   const heartbeatAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Inisialisasi audio di Client Side
+  //test
   useEffect(() => {
-    transitionAudioRef.current = new Audio("/Audio/Cinematic Sci-fi Chime Transition FX HD.mp3");
-    heartbeatAudioRef.current = new Audio("/Audio/Suspenseful Heartbeat.mp3");
+    transitionAudioRef.current = new Audio("https://github.com/Blurryface275/MOBFT26-GameRally/blob/main/public/Audio/Cinematic%20Sci-fi%20Chime%20Transition%20FX%20HD.mp3");
+    heartbeatAudioRef.current = new Audio("https://github.com/Blurryface275/MOBFT26-GameRally/blob/main/public/Audio/Suspenseful%20Heartbeat.mp3");
     
     if (heartbeatAudioRef.current) {
       heartbeatAudioRef.current.loop = true; // Loop heartbeat

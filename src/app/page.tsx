@@ -1,7 +1,7 @@
 "use client";
 
 import { useChromaGame } from "../hooks/useChromaGame";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Background3D from "../components/Background3D";
 import Image from "next/image";
 import logoImg from "../../public/logo-mob-ft-2026.webp";
@@ -22,6 +22,57 @@ export default function Home() {
     nextRound,
     addCheckTime,
   } = useChromaGame();
+
+  const transitionAudioRef = useRef<HTMLAudioElement | null>(null);
+  const heartbeatAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Inisialisasi audio di Client Side
+  useEffect(() => {
+    transitionAudioRef.current = new Audio("/Audio/Cinematic Sci-fi Chime Transition FX HD.mp3");
+    heartbeatAudioRef.current = new Audio("/Audio/Suspenseful Heartbeat.mp3");
+    
+    if (heartbeatAudioRef.current) {
+      heartbeatAudioRef.current.loop = true; // Loop heartbeat
+    }
+
+    return () => {
+      // Bersihkan memori saat unmount
+      if (heartbeatAudioRef.current) {
+        heartbeatAudioRef.current.pause();
+        heartbeatAudioRef.current = null;
+      }
+      transitionAudioRef.current = null;
+    };
+  }, []);
+
+  // Memutar audio "Swoosh/Chime" setiap kali soal baru muncul (Fase PLAY)
+  useEffect(() => {
+    if (phase === "PLAY" && transitionAudioRef.current) {
+      transitionAudioRef.current.currentTime = 0; // Mulai dari awal
+      transitionAudioRef.current.play().catch(console.error);
+    }
+  }, [phase]);
+
+  // Memutar & mengatur tempo audio "Heartbeat" berdasarkan sisa waktu (countdown)
+  useEffect(() => {
+    if (!heartbeatAudioRef.current) return;
+
+    if (phase !== "IDLE" && countdown > 0) {
+      // Semakin kecil angka countdown (<= 5 detik), semakin kencang temponya
+      let rate = 1.0;
+      if (countdown <= 5) {
+        rate = 1.0 + (5 - countdown) * 0.25; // max rate ~ 2.25 saat 0 detik
+      }
+      heartbeatAudioRef.current.playbackRate = rate;
+
+      if (heartbeatAudioRef.current.paused) {
+        heartbeatAudioRef.current.play().catch(console.error);
+      }
+    } else {
+      // Hentikan heartbeat jika IDLE atau waktu sudah habis (0)
+      heartbeatAudioRef.current.pause();
+    }
+  }, [phase, countdown]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative z-10 w-full overflow-hidden">

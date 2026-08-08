@@ -171,7 +171,7 @@ export default function Home() {
                   fill="transparent"
                   className="text-zinc-800"
                 />
-                {/* Kalkulasi proporsional lingkaran terhadap 3 detik */}
+                {/* Kalkulasi proporsional lingkaran terhadap 5 detik */}
                 <circle
                   cx="64"
                   cy="64"
@@ -181,7 +181,7 @@ export default function Home() {
                   fill="transparent"
                   className="text-white transition-all duration-1000 ease-linear"
                   strokeDasharray={377}
-                  strokeDashoffset={377 - (377 * countdown) / 3}
+                  strokeDashoffset={377 - (377 * countdown) / 5}
                 />
               </svg>
               <div

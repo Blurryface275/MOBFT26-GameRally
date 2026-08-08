@@ -15,6 +15,15 @@ export const COLORS: GameColor[] = [
   { name: "KUNING", hex: "#EAB308" }, // Yellow-500
   { name: "BIRU", hex: "#3B82F6" }, // Blue-500
   { name: "HIJAU", hex: "#22C55E" }, // Green-500
+  { name: "ORANYE", hex: "#F97316" }, 
+  { name: "UNGU", hex: "#A855F7" },
+  { name: "PUTIH", hex: "#FFFFFF" },
+  { name: "ABU-ABU", hex: "#9CA3AF" },
+  { name: "COKELAT", hex: "#8B4513" },
+  { name: "EMAS", hex: "#FFD700" },
+  { name: "SILVER", hex: "#C0C0C0" },
+  { name: "TOSCA", hex: "#14B8A6" },
+  { name: "MAROON", hex: "#800000" },
 ];
 
 /**
@@ -56,7 +65,7 @@ export function useChromaGame() {
    */
   const startGame = useCallback(() => {
     setPhase("PREP");
-    setCountdown(5); // Angka 5 detik pertama untuk bersiap
+    setCountdown(3); // Angka 3 detik pertama untuk bersiap
   }, []);
 
   /**
@@ -73,7 +82,7 @@ export function useChromaGame() {
   const nextRound = useCallback(() => {
     randomizeColors();
     setPhase("PLAY");
-    setCountdown(3); // Pemain punya waktu 3 detik bereaksi
+    setCountdown(5); // Pemain punya waktu 5 detik bereaksi
   }, [randomizeColors]);
 
   /**

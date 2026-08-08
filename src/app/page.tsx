@@ -29,19 +29,19 @@ export default function Home() {
   // Inisialisasi audio di Client Side
   //test
   useEffect(() => {
-    transitionAudioRef.current = new Audio("https://github.com/Blurryface275/MOBFT26-GameRally/blob/main/public/Audio/Cinematic%20Sci-fi%20Chime%20Transition%20FX%20HD.mp3");
-    heartbeatAudioRef.current = new Audio("https://github.com/Blurryface275/MOBFT26-GameRally/blob/main/public/Audio/Suspenseful%20Heartbeat.mp3");
+    const transition = new Audio("https://raw.githubusercontent.com/Blurryface275/MOBFT26-GameRally/refs/heads/main/public/Audio/Cinematic%20Sci-fi%20Chime%20Transition%20FX%20HD.mp3");
+    const heartbeat = new Audio("https://raw.githubusercontent.com/Blurryface275/MOBFT26-GameRally/refs/heads/main/public/Audio/Suspenseful%20Heartbeat.mp3");
     
-    if (heartbeatAudioRef.current) {
-      heartbeatAudioRef.current.loop = true; // Loop heartbeat
-    }
+    transitionAudioRef.current = transition;
+    heartbeatAudioRef.current = heartbeat;
+    
+    heartbeat.loop = true; // Loop heartbeat
 
     return () => {
       // Bersihkan memori saat unmount
-      if (heartbeatAudioRef.current) {
-        heartbeatAudioRef.current.pause();
-        heartbeatAudioRef.current = null;
-      }
+      heartbeat.pause();
+      transition.pause();
+      heartbeatAudioRef.current = null;
       transitionAudioRef.current = null;
     };
   }, []);

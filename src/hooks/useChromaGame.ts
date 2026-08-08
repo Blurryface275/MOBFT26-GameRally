@@ -94,10 +94,8 @@ export function useChromaGame() {
 
     let timeoutDelay = 1000; // Timer jalan tiap detik
 
-    // Apabila hitungan habis (<=0), jangan lakukan jeda ekstra sedetik lagi, langsung eksekusi logika.
-    if (countdown <= 0) {
-      timeoutDelay = 0; // Transisi state secara asinkron super-cepat
-    }
+    // Jangan ubah timeoutDelay menjadi 0 agar angka 0 tetap terlihat selama 1 detik penuh
+    // sebelum berpindah ke fase selanjutnya.
 
     timerRef.current = setTimeout(() => {
       // Cabang Logika (State Machine Transisi) saat timer nol:

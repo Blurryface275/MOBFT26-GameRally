@@ -15,16 +15,17 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   overflow: hidden; /* Mencegah scroll saat bermain */
 }
 
-/* Animasi Premium & Efek Glow */
+/* Animasi Premium & Efek Glow GPU-Accelerated */
 .text-glow {
   text-shadow:
-    0 0 15px currentColor,
-    0 0 30px currentColor,
-    0 0 45px currentColor;
+    0 0 20px currentColor,
+    0 0 40px currentColor,
+    0 0 60px currentColor;
+  will-change: filter, transform;
 }
 
 .box-glow {
@@ -35,11 +36,11 @@ body {
 
 @keyframes scaleUp {
   0% {
-    transform: scale(0.9);
+    transform: scale3d(0.9, 0.9, 1);
     opacity: 0;
   }
   100% {
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
     opacity: 1;
   }
 }
@@ -48,47 +49,46 @@ body {
   0%,
   100% {
     opacity: 1;
-    text-shadow:
-      0 0 15px currentColor,
-      0 0 30px currentColor,
-      0 0 45px currentColor;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
   }
   50% {
-    opacity: 0.8;
-    text-shadow:
-      0 0 10px currentColor,
-      0 0 20px currentColor,
-      0 0 30px currentColor;
-    transform: scale(0.98);
+    opacity: 0.85;
+    transform: scale3d(0.98, 0.98, 1);
   }
 }
 
 .animate-scale-up {
-  animation: scaleUp 0.3s ease-out forwards;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-pulse-neon {
-  animation: pulseNeon 2s infinite ease-in-out;
+  animation: pulseNeon 2.5s infinite ease-in-out;
+  will-change: transform, opacity;
 }
 
 /* Animasi untuk Countdown */
 @keyframes pop {
   0% {
-    transform: scale(0.5);
+    transform: scale3d(0.5, 0.5, 1);
     opacity: 0;
   }
   50% {
-    transform: scale(1.1);
+    transform: scale3d(1.1, 1.1, 1);
     opacity: 1;
   }
   100% {
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
     opacity: 1;
   }
 }
 
-/* Animasi lompat konstan (1 detik sekali) porsi waktu merata */
+.countdown-pop {
+  animation: pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  will-change: transform, opacity;
+}
+
+/* Animasi lompat Pixar */
 @keyframes pixarJump {
   0%,
   100% {
@@ -96,23 +96,24 @@ body {
   }
   15% {
     transform: translateY(0) scaleY(0.75) scaleX(1.15);
-  } /* Bersiap (squash) */
+  }
   40% {
     transform: translateY(-30px) scaleY(1.15) scaleX(0.85);
-  } /* Puncak lompat */
+  }
   65% {
     transform: translateY(0) scaleY(0.85) scaleX(1.1);
-  } /* Mendarat (squash) */
+  }
   80% {
     transform: translateY(-8px) scaleY(1.05) scaleX(0.98);
-  } /* Pantul kecil */
+  }
   92% {
     transform: translateY(0) scaleY(1) scaleX(1);
-  } /* Berdiri tegak */
+  }
 }
 
 .animate-pixar-jump {
   animation: pixarJump 2.5s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
   display: inline-block;
   transform-origin: bottom;
+  will-change: transform;
 }

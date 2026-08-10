@@ -1,21 +1,18 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-// Tipe untuk fase permainan, membantu state machine mengontrol tampilan dan aksi pengguna
 export type GamePhase = "IDLE" | "PREP" | "PLAY" | "CHECK";
 
-// Interface standar untuk mendefinisikan objek warna dan nilai Hexadecimal-nya
 export interface GameColor {
   name: string;
   hex: string;
 }
 
-// Koleksi warna yang tersedia di permainan
 export const COLORS: GameColor[] = [
-  { name: "MERAH", hex: "#EF4444" }, // Red-500 dari Tailwind
-  { name: "KUNING", hex: "#EAB308" }, // Yellow-500
-  { name: "BIRU", hex: "#3B82F6" }, // Blue-500
-  { name: "HIJAU", hex: "#22C55E" }, // Green-500
-  { name: "ORANYE", hex: "#F97316" }, 
+  { name: "MERAH", hex: "#EF4444" },
+  { name: "KUNING", hex: "#EAB308" },
+  { name: "BIRU", hex: "#3B82F6" },
+  { name: "HIJAU", hex: "#22C55E" },
+  { name: "ORANYE", hex: "#F97316" },
   { name: "UNGU", hex: "#A855F7" },
   { name: "PUTIH", hex: "#FFFFFF" },
   { name: "ABU-ABU", hex: "#9CA3AF" },
@@ -28,116 +25,143 @@ export const COLORS: GameColor[] = [
 
 /**
  * Custom Hook: `useChromaGame`
- * Bertanggung jawab menangani semua logikan bisnis ("game state", timer, pengatur rintangan warna).
- * Dengan memisahkannya, komponen UI (page.tsx) akan tetap rapi dan bersih.
+ * Bertanggung jawab menangani state machine game, timer presisi,
+ * pengacakan O(1), kontrol suara, dan shortcut keyboard untuk Penpos.
  */
 export function useChromaGame() {
-  // State dasar game
   const [phase, setPhase] = useState<GamePhase>("IDLE");
   const [countdown, setCountdown] = useState<number>(0);
-
-  // State untuk tantangan (warna vs tulisan)
   const [targetWord, setTargetWord] = useState<GameColor>(COLORS[0]);
-  const [displayColor, setDisplayColor] = useState<GameColor>(COLORS[0]);
+  const [displayColor, setDisplayColor] = useState<GameColor>(COLORS[1]);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
 
-  // Digunakan untuk melacak interval timeout agar bisa dibersihkan secara presisi
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   /**
-   * Fungsi untuk mendapatkan kata acak dan warna acak yang DIJAMIN BERBEDA,
-   * Agar tantangan "menelepon petak yang mana" ada jebakannya (misal Kata Kuning, Font Hijau).
+   * Mengacak kata target & warna display secara deterministik O(1)
+   * tanpa loop acak berulang.
    */
   const randomizeColors = useCallback(() => {
-    const randomWordIdx = Math.floor(Math.random() * COLORS.length);
-    let randomColorIdx = Math.floor(Math.random() * COLORS.length);
+    const wordIdx = Math.floor(Math.random() * COLORS.length);
+    const selectedWord = COLORS[wordIdx];
 
-    // Looping hingga warna font dan nama kata berbeda
-    while (randomColorIdx === randomWordIdx) {
-      randomColorIdx = Math.floor(Math.random() * COLORS.length);
-    }
+    const availableColors = COLORS.filter((_, idx) => idx !== wordIdx);
+    const selectedColor =
+      availableColors[Math.floor(Math.random() * availableColors.length)];
 
-    setTargetWord(COLORS[randomWordIdx]);
-    setDisplayColor(COLORS[randomColorIdx]);
+    setTargetWord(selectedWord);
+    setDisplayColor(selectedColor);
   }, []);
 
-  /**
-   * Mulai inisiasi permainan dengan memindah ke fase PREP (hitung mundur awalan)
-   */
   const startGame = useCallback(() => {
     setPhase("PREP");
-    setCountdown(3); // Angka 3 detik pertama untuk bersiap
+    setCountdown(3);
   }, []);
 
-  /**
-   * Menghentikan atau nge-reset ulang game dengan paksa
-   */
   const stopGame = useCallback(() => {
     setPhase("IDLE");
     setCountdown(0);
   }, []);
 
-  /**
-   * Mereset teka-teki logika game dan memindahkan ke mode bermain aktif
-   */
   const nextRound = useCallback(() => {
     randomizeColors();
     setPhase("PLAY");
-    setCountdown(5); // Pemain punya waktu 5 detik bereaksi
+    setCountdown(5);
   }, [randomizeColors]);
 
-  /**
-   * Admin-Only: memperlama masa tunggu pemeriksaan peserta
-   */
   const addCheckTime = useCallback(() => {
     if (phase === "CHECK") {
       setCountdown((prev) => prev + 10);
     }
   }, [phase]);
 
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => !prev);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    }
+  }, []);
+
   /**
-   * SISTEM LOOP PERMAINAN SEAMLESS
-   * Memakai satu useEffect untuk menangkap transisi tanpa memanggil render yang bocor.
+   * Precision Timer Engine
    */
   useEffect(() => {
-    if (phase === "IDLE") return; // Timer tidak jalan bila idle
-
-    let timeoutDelay = 1000; // Timer jalan tiap detik
-
-    // Jangan ubah timeoutDelay menjadi 0 agar angka 0 tetap terlihat selama 1 detik penuh
-    // sebelum berpindah ke fase selanjutnya.
+    if (phase === "IDLE") return;
 
     timerRef.current = setTimeout(() => {
-      // Cabang Logika (State Machine Transisi) saat timer nol:
       if (countdown <= 0) {
         if (phase === "PREP") {
-          nextRound(); // Persiapan selesai -> Mulai Rounde-nya
+          nextRound();
         } else if (phase === "PLAY") {
-          // Fase main selesai -> Cek posisi penjaga (kasih 15 detik)
           setPhase("CHECK");
           setCountdown(15);
         } else if (phase === "CHECK") {
-          // Waktu pengecekan selesai -> Gulir lagi otomatis ke ronde baru
           nextRound();
         }
       } else {
-        // Apabila waktu blm habis, kurangi waktu dengan aman via callback functional
         setCountdown((c) => c - 1);
       }
-    }, timeoutDelay);
+    }, 1000);
 
-    // Garbage-Collection: Bersihkan timeout usang setiap efekk dire-evaluasi
-    return () => clearTimeout(timerRef.current as NodeJS.Timeout);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [phase, countdown, nextRound]);
 
-  // Expose Data & Method keluar ke UI
+  /**
+   * Penpos Keyboard Shortcuts Listener
+   */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      switch (e.code) {
+        case "Space":
+        case "Enter":
+          e.preventDefault();
+          if (phase === "IDLE") startGame();
+          else if (phase === "CHECK") nextRound();
+          break;
+        case "Escape":
+          e.preventDefault();
+          stopGame();
+          break;
+        case "KeyA":
+          if (phase === "CHECK") addCheckTime();
+          break;
+        case "KeyM":
+          toggleMute();
+          break;
+        case "KeyF":
+          toggleFullscreen();
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [phase, startGame, stopGame, nextRound, addCheckTime, toggleMute, toggleFullscreen]);
+
   return {
     phase,
     countdown,
     targetWord,
     displayColor,
+    isMuted,
     startGame,
     stopGame,
     nextRound,
     addCheckTime,
+    toggleMute,
+    toggleFullscreen,
   };
 }

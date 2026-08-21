@@ -17,7 +17,7 @@ export const COLORS: GameColor[] = [
   { name: "PUTIH", hex: "#FFFFFF" },
   { name: "ABU-ABU", hex: "#9CA3AF" },
   { name: "COKELAT", hex: "#8B4513" },
-  { name: "EMAS", hex: "#FFD700" },
+  { name: "PINK", hex: "#ed6adbff" },
   { name: "SILVER", hex: "#C0C0C0" },
   { name: "TOSCA", hex: "#14B8A6" },
   { name: "MAROON", hex: "#800000" },
@@ -69,12 +69,6 @@ export function useChromaGame() {
     setCountdown(5);
   }, [randomizeColors]);
 
-  const addCheckTime = useCallback(() => {
-    if (phase === "CHECK") {
-      setCountdown((prev) => prev + 10);
-    }
-  }, [phase]);
-
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => !prev);
   }, []);
@@ -91,7 +85,7 @@ export function useChromaGame() {
    * Precision Timer Engine
    */
   useEffect(() => {
-    if (phase === "IDLE") return;
+    if (phase === "IDLE" || phase === "CHECK") return;
 
     timerRef.current = setTimeout(() => {
       if (countdown <= 0) {
@@ -99,9 +93,6 @@ export function useChromaGame() {
           nextRound();
         } else if (phase === "PLAY") {
           setPhase("CHECK");
-          setCountdown(15);
-        } else if (phase === "CHECK") {
-          nextRound();
         }
       } else {
         setCountdown((c) => c - 1);
@@ -135,9 +126,6 @@ export function useChromaGame() {
           e.preventDefault();
           stopGame();
           break;
-        case "KeyA":
-          if (phase === "CHECK") addCheckTime();
-          break;
         case "KeyM":
           toggleMute();
           break;
@@ -149,7 +137,7 @@ export function useChromaGame() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [phase, startGame, stopGame, nextRound, addCheckTime, toggleMute, toggleFullscreen]);
+  }, [phase, startGame, stopGame, nextRound, toggleMute, toggleFullscreen]);
 
   return {
     phase,
@@ -160,7 +148,6 @@ export function useChromaGame() {
     startGame,
     stopGame,
     nextRound,
-    addCheckTime,
     toggleMute,
     toggleFullscreen,
   };

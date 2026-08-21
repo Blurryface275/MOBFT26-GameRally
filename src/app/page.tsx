@@ -22,7 +22,6 @@ export default function Home() {
     startGame,
     stopGame,
     nextRound,
-    addCheckTime,
     toggleMute,
     toggleFullscreen,
   } = useChromaGame();
@@ -169,10 +168,6 @@ export default function Home() {
             </span>
             <span>Stop / Reset Game</span>
             <span className="font-mono text-zinc-200 bg-zinc-900 px-1.5 py-0.5 rounded text-center">
-              A
-            </span>
-            <span>+10s Check Time</span>
-            <span className="font-mono text-zinc-200 bg-zinc-900 px-1.5 py-0.5 rounded text-center">
               M
             </span>
             <span>Toggle Mute</span>
@@ -255,8 +250,8 @@ export default function Home() {
             [ FASE 3: PLAY ] Tantangan Kata vs Warna Display
             ========================================= */}
         {phase === "PLAY" && (
-          <div className="flex flex-col items-center justify-center animate-scale-up w-full min-h-[50vh]">
-            {/* Teks Pengecoh */}
+          <div className="flex flex-col items-center justify-center animate-scale-up w-full h-full min-h-[60vh]">
+            {/* Teks Pengecoh: Nama Kata ("MERAH") dengan Hex Color berlawanan ("#22C55E/hijau") */}
             <div className="animate-pulse-neon mb-12 text-center">
               <h1
                 className="text-[14vw] md:text-[10rem] font-black uppercase tracking-tighter leading-none text-glow"
@@ -318,23 +313,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div
-              aria-live="polite"
-              className="text-[10rem] md:text-[13rem] font-black text-white leading-none tabular-nums countdown-pop select-none"
-              key={`check-${countdown}`}
-            >
-              {countdown}
-            </div>
-
-            {/* Menu Admin Penpos */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-              <button
-                onClick={addCheckTime}
-                aria-label="Tambah waktu check 10 detik"
-                className="py-4 px-6 rounded-2xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 font-bold transition-all active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                +10 Detik [A]
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
 
               <button
                 onClick={stopGame}
